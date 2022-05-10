@@ -10,6 +10,7 @@ from multiprocessing import Process
 import threading
 import Controller
 
+
 def the_gui():
     sg.theme('tealmono')
 
@@ -67,7 +68,7 @@ def the_gui():
     file_run_section = [
         [
             sg.Text("Current Position: "),
-            # sg.Text(size=(30, 1), text=read_position_local('COM3')),
+            # sg.Text(size=(30, 1), text=Controller.read_position('COM3')),
         ],
         [
             sg.Text("The file chosen is: "),
@@ -115,15 +116,22 @@ def the_gui():
             break
 
         elif event == "TURN ON":
-            threading.Thread(target=Controller.turn_on, args=(values['-COM-'],), daemon=True).start()
-
+            try:
+                threading.Thread(target=Controller.turn_on, args=(values['-COM-'],), daemon=True).start()
+            except:
+                print("Cannont Turn on motors")
+                print("Please initially run motors using an excel file (temporary)")
+                pass
 
         elif event == "SEND ONCE":
-            with Motor.connect(values['-COM-']) as motor:
-                print("t START")
-                motor.select(int(values['-MOTORID-']))
-                motor.set_position(float(values['-POSITION-']), float(values['-KP-']), float(values['-KD-']))
-                print("EXECUTED")
+            try:
+                position = values['-POSITION-']
+                kp = values['-KP-']
+                kd = values['-KD-']
+                threading.Thread(target=Controller.send_once, args=(values['-MOTORID-'], position, kp, kd, values['-COM-'],), daemon=True).start()
+            except:
+                print("Can not execute single command")
+                pass
 
         elif event == "STOP":
             try:
@@ -180,7 +188,7 @@ def the_gui():
 
         elif event == "RUN":
             try:
-                threading.Thread(target=Controller.run_from_xls_local, args=(values['-TOUT-'], values['-COM-']),
+                threading.Thread(target=Controller.run_from_xls, args=(values['-TOUT-'], values['-COM-']),
                                  daemon=True).start()
             except:
                 print("Cannont run sequence from .xls file")
@@ -193,6 +201,8 @@ def the_gui():
             except:
                 print("Cannont run loop from .xls file")
                 pass
+
+
 if __name__ == '__main__':
     the_gui()
     print('EXITING PROGRAM')
