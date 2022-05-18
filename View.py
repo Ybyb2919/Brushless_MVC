@@ -1,11 +1,7 @@
-from cgi import test
 from tkinter.font import BOLD
 import PySimpleGUI as sg
 import os.path
-# from brushless import Motor
 import time
-import logging
-from multiprocessing import Process
 # from read_table_new import run_from_xls, run_from_xls_loop, stop_scheduler
 import threading
 import Controller
@@ -135,31 +131,18 @@ def the_gui():
 
         elif event == "STOP":
             try:
+                threading.Thread(target=Controller.go_to_zero_off, daemon=True).start()
                 print("--- GO TO ZERO & OFF ---")
-                stop_scheduler()
-                with Motor.connect(values['-COM-']) as motor:
-
-                    motor.select(1)
-                    motor.go_to_zero_off()
-
-                    motor.select(2)
-                    motor.go_to_zero_off()
             except:
+                print("Can not stop engines")
                 pass
 
         elif event == "MOTOR STOP":
             try:
+                threading.Thread(target=Controller.go_to_zero_off, daemon=True).start()
                 print("--- GO TO ZERO & OFF ---")
-                stop_scheduler()
-                time.sleep(1)
-                with Motor.connect(values['-COM-']) as motor:
-                    time.sleep(0.25)
-                    motor.select(1)
-                    motor.go_to_zero_off()
-
-                    motor.select(2)
-                    motor.go_to_zero_off()
             except:
+                print("Can not stop motors")
                 pass
 
         elif event == "-FOLDER-":

@@ -1,7 +1,6 @@
-# from Model import Motor
+from Model import Motor
 import time
 import Util1_Excel
-
 
 class Controller:
 
@@ -32,4 +31,20 @@ class Controller:
                 return motor.read_position()
         except:
             print("Cannot read position")
+            pass
+
+    def go_to_zero_off(COM_insert):
+        try:
+            print("--- GO TO ZERO & OFF ---")
+            Util1_Excel.stop_scheduler()
+            time.sleep(1)
+            with Motor.connect(COM_insert) as motor:
+                time.sleep(0.25)
+                motor.select(1)
+                motor.go_to_zero_off()
+
+                motor.select(2)
+                motor.go_to_zero_off()
+        except:
+            print("Could not turn off motors")
             pass
