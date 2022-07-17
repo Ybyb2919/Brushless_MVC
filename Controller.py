@@ -3,6 +3,8 @@ import time
 import Util1_Excel
 import sched
 from Util1_Excel import Command
+from serial import Serial
+
 
 scheduler = sched.scheduler()
 
@@ -19,9 +21,9 @@ class Controller:
             print("Can not execute single command")
             pass
 
-    def run_command(COM_insert, command: Command):
+    def run_command(command: Command, COM_insert):
         with Motor.connect(COM_insert) as motor:
-            motor.select(command.motor_id)
+            motor.select(int(command.motor_id))
         if command.position is not None:
             motor.set_position(command.position, command.kp, command.kd)
         elif command.speed is not None:
@@ -30,24 +32,14 @@ class Controller:
             motor.set_torque(command.torque)
 
     def run_from_xls(file_name, COM_insert):
-        # running from commands
         # try:
-            Controller.turn_on(COM_insert)
             print("Building Scheduler")
-
             commands = Util1_Excel.read_xls(file_name)
-
-            motor_ids = {command.motor_id for command in commands}
-            print("--- INIT MOTORS ---")
-
-            with Motor.connect(COM_insert) as motor:
-                Controller.turn_on(COM_insert)
-                time.sleep(7)
-
-                for command in commands:
-                    scheduler.enter(command.time, priority=0, action=Controller.run_command, argument=(COM_insert, command))
+            for command in commands:
+                scheduler.enter(command.time, priority=0,
+                                action=Controller.run_command, argument=(command, COM_insert))
+            time.sleep(2)
             print("Running from" + file_name)
-            # print(scheduler.queue)
             scheduler.run()
             print("--- STARTING SEQUENCE ---")
 
@@ -57,7 +49,7 @@ class Controller:
 
             print("--- END OF SEQUENCE ---")
         # except:
-            print("Cannont run sequence from .xls file")
+        #     print("Can not run sequence from .xls file")
             # pass
 
     def run_from_xls_loop(file_name, COM_insert):
@@ -78,8 +70,7 @@ class Controller:
                 motor.init(2)
             print("Motors ON")
         except:
-            print("Can not Turn on motors")
-            print("Please initially run motors using an excel file (temporary)")
+            print("Can not Turn on motors. Check Motors arent on and if they are reset the system")
             pass
 
     def read_position(COM_insert):

@@ -9,9 +9,6 @@ from Model import Motor
 import sys
 import pandas
 from typing import Optional, List
-import time
-import sched
-import Controller
 
 
 @dataclass
@@ -55,20 +52,20 @@ def read_xls(file: Path) -> List[Command]:
 
 
 
-def run_from_xls_loop(file: Path, com_port: str):
-    commands = read_xls(file)
-    motor_ids = {command.motor_id for command in commands}
-
-    with Motor.connect(com_port) as motor:
-        print("--- INIT MOTORS ---")
-
-        for motor_id in motor_ids:
-            motor.init(motor_id)
-        print("--- STARTING LOOP ---")
-
-        global loop_run
-        loop_run = True
-        x = 0
+# def run_from_xls_loop(file: Path, com_port: str):
+#     commands = read_xls(file)
+#     motor_ids = {command.motor_id for command in commands}
+#
+#     with Motor.connect(com_port) as motor:
+#         print("--- INIT MOTORS ---")
+#
+#         for motor_id in motor_ids:
+#             motor.init(motor_id)
+#         print("--- STARTING LOOP ---")
+#
+#         global loop_run
+#         loop_run = True
+#         x = 0
 
         # while loop_run:
         #     print("Loop iteration :", x)
@@ -77,9 +74,6 @@ def run_from_xls_loop(file: Path, com_port: str):
         #         scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command))
         #     scheduler.run()
         #     time.sleep(1)
-
-
-
 
 
 # if __name__ == '__main__':

@@ -113,14 +113,6 @@ def the_gui():
         elif event == "TURN ON":
             threading.Thread(target=Controller.turn_on, args=(values['-COM-'],), daemon=True).start()
 
-        elif event == "SEND ONCE":
-            position = values['-POSITION-']
-            kp = values['-KP-']
-            kd = values['-KD-']
-            threading.Thread(target=Controller.send_once,
-                             args=(values['-MOTORID-'], position, kp, kd, values['-COM-'],)
-                             , daemon=True).start()
-
         elif event == "STOP":
             threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
 
@@ -152,12 +144,20 @@ def the_gui():
                 pass
 
         elif event == "RUN":
-            threading.Thread(target=Controller.run_from_xls, args=(values['-TOUT-'], values['-COM-']),
+            threading.Thread(target=Controller.run_from_xls,
+                             args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
+
+        elif event == "SEND ONCE":
+            position = values['-POSITION-']
+            kp = values['-KP-']
+            kd = values['-KD-']
+            threading.Thread(target=Controller.send_once,
+                             args=(values['-MOTORID-'], position, kp, kd, values['-COM-'],),
                              daemon=True).start()
 
         elif event == "LOOP":
-            threading.Thread(target=Controller.run_from_xls_loop, args=(values['-TOUT-'], values['-COM-']),
-                             daemon=True).start()
+            threading.Thread(target=Controller.run_from_xls_loop,
+                             args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
 
 
 if __name__ == '__main__':

@@ -32,8 +32,6 @@ class Motor:
         self.serial.write(message)
         response = self.serial.read(11)
         response_can_data = response[4:-1]
-        global current_position
-        current_position = AK606Config
         print('ID: %d = ' % self.motor_id, end='')
         print(Field.unpack(response_can_data, [AK606Config.POSITION, AK606Config.SPEED]))
 
