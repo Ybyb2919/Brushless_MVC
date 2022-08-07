@@ -21,9 +21,9 @@ class Controller:
             print("Can not execute single command")
             pass
 
-    def run_command(command: Command, COM_insert):
-        with Motor.connect(COM_insert) as motor:
-            motor.select(int(command.motor_id))
+    def run_command(motor: Motor, command: Command):
+        motor.select(command.motor_id)
+
         if command.position is not None:
             motor.set_position(command.position, command.kp, command.kd)
         elif command.speed is not None:
@@ -32,25 +32,28 @@ class Controller:
             motor.set_torque(command.torque)
 
     def run_from_xls(file_name, COM_insert):
-        # try:
+        try:
+            Controller.turn_on(COM_insert)
             print("Building Scheduler")
             commands = Util1_Excel.read_xls(file_name)
-            for command in commands:
-                scheduler.enter(command.time, priority=0,
-                                action=Controller.run_command, argument=(command, COM_insert))
-            time.sleep(2)
-            print("Running from" + file_name)
-            scheduler.run()
-            print("--- STARTING SEQUENCE ---")
 
-            # Moves to zero:
+            with Motor.connect(COM_insert) as motor:
+
+                for command in commands:
+                    scheduler.enter(command.time, priority=0,
+                                    action=Controller.run_command, argument=(motor, command))
+                time.sleep(2)
+                print("Running from" + file_name)
+                print("--- STARTING SEQUENCE ---")
+                scheduler.run()
+
             print("--- GO TO ZERO & OFF ---")
             Controller.go_to_zero_off(COM_insert)
 
             print("--- END OF SEQUENCE ---")
-        # except:
-        #     print("Can not run sequence from .xls file")
-            # pass
+        except:
+            print("Can not run sequence from .xls file")
+            pass
 
     def run_from_xls_loop(file_name, COM_insert):
         # try:

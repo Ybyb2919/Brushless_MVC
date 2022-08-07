@@ -73,8 +73,8 @@ def the_gui():
             sg.HSeparator()
         ],
         [
-            sg.Text("                         "),
-            sg.Button("RUN"),
+            sg.Text("                 "),
+            sg.Button("ON & RUN"),
             sg.Button("MOTOR STOP")
         ],
         [
@@ -143,9 +143,10 @@ def the_gui():
             except:
                 pass
 
-        elif event == "RUN":
-            threading.Thread(target=Controller.run_from_xls,
-                             args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
+        elif event == "ON & RUN":
+            Controller.run_from_xls(values['-TOUT-'], values['-COM-'])
+            # threading.Thread(target=Controller.run_from_xls
+            # ,args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
 
         elif event == "SEND ONCE":
             position = values['-POSITION-']

@@ -4,7 +4,6 @@ from contextlib import contextmanager
 from fields import Field
 import time
 
-
 class Motor:
     global current_position
     RLINK_PREFIX = bytes.fromhex('aaaf0fa1')
