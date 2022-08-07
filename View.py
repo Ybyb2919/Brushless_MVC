@@ -1,7 +1,8 @@
 from tkinter.font import BOLD
 import PySimpleGUI as sg
 import os.path
-import datetime, time
+import schedule
+import time
 import threading
 from Controller import Controller
 
@@ -62,8 +63,9 @@ def the_gui():
 
     file_run_section = [
         [
-            sg.Text("Current Position: "),
-            # sg.Text(size=(30, 1), text=Controller.read_position('COM3')),
+            sg.Button("Get position: "),
+            sg.In(size=(15, 1), key="-POSITION1-"),
+            sg.In(size=(15, 1), key="-POSITION2-")
         ],
         [
             sg.Text("The file chosen is: "),
@@ -149,6 +151,15 @@ def the_gui():
                     values["-FOLDER-"], values["-TABLE LIST-"][0]
                 )
                 window["-TOUT-"].update(filename)
+            except:
+                pass
+
+        elif event == "Get position: ":
+            try:
+                position1 = Controller.read_position(values['-COM-'], 1)
+                position2 = Controller.read_position(values['-COM-'], 2)
+                window["-POSITION1-"].update(position1)
+                window["-POSITION2-"].update(position2)
             except:
                 pass
 

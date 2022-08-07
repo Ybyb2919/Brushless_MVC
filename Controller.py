@@ -121,12 +121,12 @@ class Controller:
             print("Can not Turn on motors. Check Motors arent on and if they are reset the system")
             pass
 
-    def read_position(COM_insert):
+    def read_position(COM_insert, motor_id):
         try:
             with Motor.connect(COM_insert) as motor:
-                return motor.read_position()
+                motor.select(motor_id)
+                return motor.return_position()
         except:
-            print("Cannot read position")
             pass
 
     def go_to_zero_off(COM_insert):

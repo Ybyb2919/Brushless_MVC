@@ -79,8 +79,12 @@ class Motor:
         self.stop()
         time.sleep(0.5)
 
-    # def read_position(self):
-    #     return current_position
+    def return_position(self):
+        # response = self.serial.read(11)
+        # response_can_data = response[4:-1]
+        x = ('ID: %d = ' % self.motor_id)
+        # x += (Field.unpack(response_can_data, [AK606Config.POSITION, AK606Config.SPEED]))
+        return x
 
     # def read_speed(self):
     #     return AK606Config.SPEED
