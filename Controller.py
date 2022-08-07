@@ -55,14 +55,59 @@ class Controller:
             print("Can not run sequence from .xls file")
             pass
 
-    def run_from_xls_loop(file_name, COM_insert):
-        # try:
-            print("Looping from : " + file_name)
-        #     run_from_xls_loop(file_name, COM_insert)
-        #
-        # except:
-        #     print("Cannont run loop from .xls file")
-        #     pass
+    def run_from_xls_loop(file_name, COM_insert, loop_count):
+        try:
+            i = int(loop_count)
+            Controller.turn_on(COM_insert)
+            print("Building Scheduler")
+            commands = Util1_Excel.read_xls(file_name)
+
+            print("Running from" + file_name)
+
+            with Motor.connect(COM_insert) as motor:
+                while i > 0:
+                    i -= 1
+                    for command in commands:
+                        scheduler.enter(command.time, priority=0,
+                                        action=Controller.run_command, argument=(motor, command))
+                    time.sleep(0.3)
+                    print("Iteration", int(loop_count) - i)
+                    scheduler.run()
+
+            print("--- GO TO ZERO & OFF ---")
+            Controller.go_to_zero_off(COM_insert)
+
+            print("--- END OF SEQUENCE ---")
+        except:
+            print("Can not run loop from .xls file")
+            pass
+
+    def run_from_xls_loop_date_time(file_name, COM_insert, loop_count):
+        try:
+            i = int(loop_count)
+            Controller.turn_on(COM_insert)
+            print("Building Scheduler")
+            commands = Util1_Excel.read_xls(file_name)
+
+            print("Running from" + file_name)
+
+            with Motor.connect(COM_insert) as motor:
+                while i > 0:
+                    i -= 1
+                    for command in commands:
+                        scheduler.enter(command.time, priority=0,
+                                        action=Controller.run_command, argument=(motor, command))
+                    time.sleep(0.3)
+                    print("Iteration", int(loop_count) - i)
+                    scheduler.run()
+
+            print("--- GO TO ZERO & OFF ---")
+            Controller.go_to_zero_off(COM_insert)
+
+            print("--- END OF SEQUENCE ---")
+        except:
+            print("Can not run loop from .xls file")
+            pass
 
     def turn_on(COM_insert):
         try:
