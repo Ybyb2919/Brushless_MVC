@@ -91,8 +91,8 @@ def the_gui():
             sg.Text("Run for X days: "),
             sg.Combo(['1', '2', '3', '4', '5'], default_value='1', key='-RUNNING_DAYS-'),
             sg.Text("Between hours: "),
-            sg.Combo(['09:00', '10:00', '11:00', '12:00'], default_value='09:00', key='-START_HOUR-'),
-            sg.Combo(['13:00', '14:00', '15:00', '16:00'], default_value='16:00', key='-END_HOUR-'),
+            sg.Combo(['09:00', '10:00', '11:00', '12:00', '13:00'], default_value='09:00', key='-START_HOUR-'),
+            sg.Combo(['13:00', '14:00', '15:00', '16:00', '17:00'], default_value='16:00', key='-END_HOUR-'),
 
         ],
         [
@@ -109,7 +109,7 @@ def the_gui():
             sg.VSeperator(),
             sg.Column(file_run_section)
         ],
-        [sg.Output(size=(132, 15))]
+        [sg.Output(size=(139, 15))]
     ]
 
     window = sg.Window('AK 60 Duo Controller', layout)
@@ -154,13 +154,11 @@ def the_gui():
                 pass
 
         elif event == "Get position: ":
-            try:
-                position1 = Controller.read_position(values['-COM-'], 1)
-                position2 = Controller.read_position(values['-COM-'], 2)
-                window["-POSITION1-"].update(position1)
-                window["-POSITION2-"].update(position2)
-            except:
-                pass
+            position1 = Controller.read_position(values['-COM-'], 1)
+            position2 = Controller.read_position(values['-COM-'], 2)
+            window["-POSITION1-"].update(position1)
+            window["-POSITION2-"].update(position2)
+
 
         elif event == "ON & RUN":
             threading.Thread(target=Controller.run_from_xls,

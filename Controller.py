@@ -6,6 +6,8 @@ from Util1_Excel import Command
 import schedule
 from datetime import datetime
 scheduler = sched.scheduler()
+global loop_run
+
 
 class Controller:
 
@@ -64,6 +66,8 @@ class Controller:
             print("Running from" + file_name)
 
             with Motor.connect(COM_insert) as motor:
+                global loop_run
+                loop_run = True
                 while i > 0 and loop_run is True:
                     i -= 1
                     for command in commands:
@@ -82,34 +86,44 @@ class Controller:
             pass
 
     def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_hour):
-        schedule.every().day.at(start_hour).do(Controller.run_from_xls_loop_time
-                                               (file_name,COM_insert,end_hour))
-        start_date = now.strftime("%d")
-        Controller.turn_on(COM_insert)
+        if file_name == "":
+            print("No file chosen, please choose file to run")
+        else:
+            # schedule.every().day.at(start_hour).do(job_func=Controller.run_from_xls_loop_time,
+            #                                        file_name=file_name, COM_insert=COM_insert, end_hour=end_hour)
+            schedule.every(10).seconds.do(job_func=Controller.run_from_xls_loop_time,
+                                          file_name=file_name, COM_insert=COM_insert, end_hour=end_hour)
+            now = datetime.now()
+            start_date = int(now.strftime("%d"))
+            num_days = int(loop_count)
+            global loop_run
+            loop_run = True
+            while start_date+num_days > int(now.strftime("%d")) and loop_run is True:
+                print("test1", datetime.now())
+                schedule.run_pending()
+                time.sleep(1)
 
-        while int(loop_count)+int(start_date)<int(now.strftime("%D")):
-
-
-
-
-    @staticmethod
     def run_from_xls_loop_time(file_name, COM_insert, end_hour):
+        print("test2")
         end_hour = end_hour[:2]
         now = datetime.now()
         current_hour = now.strftime("%H")
         try:
+            print("test3")
             Controller.turn_on(COM_insert)
             print("Building Scheduler")
             commands = Util1_Excel.read_xls(file_name)
             print("Running from" + file_name)
 
             with Motor.connect(COM_insert) as motor:
-                while int(current_hour) < int(end_hour):
+                global loop_run
+                loop_run = True
+                while int(current_hour) < int(end_hour) and loop_run is True:
                     for command in commands:
                         scheduler.enter(command.time, priority=0,
                                         action=Controller.run_command, argument=(motor, command))
                     time.sleep(0.3)
-                    print("Iteration: ", i)
+                    print("test4")
                     scheduler.run()
 
             print("--- GO TO ZERO & OFF ---")
