@@ -3,9 +3,8 @@ import time
 import Util1_Excel
 import sched
 from Util1_Excel import Command
-from serial import Serial
-
-
+import schedule
+from datetime import datetime
 scheduler = sched.scheduler()
 
 class Controller:
@@ -65,7 +64,7 @@ class Controller:
             print("Running from" + file_name)
 
             with Motor.connect(COM_insert) as motor:
-                while i > 0:
+                while i > 0 and loop_run is True:
                     i -= 1
                     for command in commands:
                         scheduler.enter(command.time, priority=0,
@@ -82,23 +81,35 @@ class Controller:
             print("Can not run loop from .xls file")
             pass
 
-    def run_from_xls_loop_date_time(file_name, COM_insert, loop_count):
+    def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_hour):
+        schedule.every().day.at(start_hour).do(Controller.run_from_xls_loop_time
+                                               (file_name,COM_insert,end_hour))
+        start_date = now.strftime("%d")
+        Controller.turn_on(COM_insert)
+
+        while int(loop_count)+int(start_date)<int(now.strftime("%D")):
+
+
+
+
+    @staticmethod
+    def run_from_xls_loop_time(file_name, COM_insert, end_hour):
+        end_hour = end_hour[:2]
+        now = datetime.now()
+        current_hour = now.strftime("%H")
         try:
-            i = int(loop_count)
             Controller.turn_on(COM_insert)
             print("Building Scheduler")
             commands = Util1_Excel.read_xls(file_name)
-
             print("Running from" + file_name)
 
             with Motor.connect(COM_insert) as motor:
-                while i > 0:
-                    i -= 1
+                while int(current_hour) < int(end_hour):
                     for command in commands:
                         scheduler.enter(command.time, priority=0,
                                         action=Controller.run_command, argument=(motor, command))
                     time.sleep(0.3)
-                    print("Iteration", int(loop_count) - i)
+                    print("Iteration: ", i)
                     scheduler.run()
 
             print("--- GO TO ZERO & OFF ---")

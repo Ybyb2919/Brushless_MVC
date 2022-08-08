@@ -91,7 +91,7 @@ def the_gui():
             sg.Text("Run for X days: "),
             sg.Combo(['1', '2', '3', '4', '5'], default_value='1', key='-RUNNING_DAYS-'),
             sg.Text("Between hours: "),
-            sg.Combo(['9:00', '10:00', '11:00', '12:00'], default_value='9:00', key='-START_HOUR-'),
+            sg.Combo(['09:00', '10:00', '11:00', '12:00'], default_value='09:00', key='-START_HOUR-'),
             sg.Combo(['13:00', '14:00', '15:00', '16:00'], default_value='16:00', key='-END_HOUR-'),
 
         ],
@@ -108,8 +108,7 @@ def the_gui():
             sg.Column(file_list_column),
             sg.VSeperator(),
             sg.Column(file_run_section)
-        ]
-        ,
+        ],
         [sg.Output(size=(132, 15))]
     ]
 
@@ -180,7 +179,7 @@ def the_gui():
                              args=(values['-TOUT-'], values['-COM-'], values['-LOOP_COUNT-']), daemon=True).start()
 
         elif event == "LOOP DATE&TIME":
-            threading.Thread(target=Controller.run_from_xls_loop_date_time,
+            threading.Thread(target=Controller.run_from_xls_loop_date,
                              args=(values['-TOUT-'], values['-COM-'], values['-RUNNING_DAYS-'],
                                    values['-START_HOUR-'], values['-END_HOUR-']), daemon=True).start()
 

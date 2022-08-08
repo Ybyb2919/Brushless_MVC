@@ -1,12 +1,6 @@
-from cgitb import reset
 from dataclasses import dataclass
 from datetime import datetime
-from os import read
 from pathlib import Path
-import random
-from tracemalloc import start
-from Model import Motor
-import sys
 import pandas
 from typing import Optional, List
 
