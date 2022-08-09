@@ -1,10 +1,9 @@
 from tkinter.font import BOLD
 import PySimpleGUI as sg
 import os.path
-import schedule
 import time
 import threading
-from Controller import Controller
+import Controller
 
 
 def the_gui():
@@ -77,23 +76,27 @@ def the_gui():
         [
             sg.Button("ON & RUN"),
             sg.Button("LOOP"),
-            sg.Button("LOOP DATE&TIME"),
+            sg.Text("Loop count:"),
+            sg.Combo(['2', '5', '10', '20', '50', '100', '1000'], default_value='10', key='-LOOP_COUNT-'),
             sg.Button("MOTOR STOP")
         ],
         [
             sg.HSeparator()
         ],
         [
-            sg.Text("Loop count:"),
-            sg.Combo(['10', '20', '50', '100'], default_value='10', key='-LOOP_COUNT-')
+            sg.Button("LOOP DATE&TIME"),
+            sg.Button("STOP DATE&TIME LOOP")
         ],
         [
             sg.Text("Run for X days: "),
             sg.Combo(['1', '2', '3', '4', '5'], default_value='1', key='-RUNNING_DAYS-'),
             sg.Text("Between hours: "),
             sg.Combo(['09:00', '10:00', '11:00', '12:00', '13:00'], default_value='09:00', key='-START_HOUR-'),
-            sg.Combo(['13:00', '14:00', '15:00', '16:00', '17:00'], default_value='16:00', key='-END_HOUR-'),
+            sg.Combo(['12:00', '13:00', '14:00', '15:00', '16:00', '17:00'], default_value='16:00', key='-END_HOUR-'),
 
+        ],
+        [
+            sg.HSeparator()
         ],
         [
             sg.Text("Hit EXIT to terminate the program:"),
@@ -118,6 +121,7 @@ def the_gui():
         event, values = window.read()
 
         if event == "EXIT" or event == sg.WIN_CLOSED:
+            Controller.go_to_zero_off(values['-COM-'])
             break
 
         elif event == "TURN ON":
@@ -127,7 +131,7 @@ def the_gui():
             threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "MOTOR STOP":
-            threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],),  daemon=True).start()
+            threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "-FOLDER-":
             folder = values["-FOLDER-"]
@@ -139,8 +143,7 @@ def the_gui():
             fnames = [
                 f
                 for f in file_list
-                if os.path.isfile(os.path.join(folder, f))
-                   and f.lower().endswith((".xlsx"))
+                if os.path.isfile(os.path.join(folder, f)) and f.lower().endswith(".xlsx")
             ]
             window["-TABLE LIST-"].update(fnames)
 
@@ -158,7 +161,6 @@ def the_gui():
             position2 = Controller.read_position(values['-COM-'], 2)
             window["-POSITION1-"].update(position1)
             window["-POSITION2-"].update(position2)
-
 
         elif event == "ON & RUN":
             threading.Thread(target=Controller.run_from_xls,
@@ -180,6 +182,10 @@ def the_gui():
             threading.Thread(target=Controller.run_from_xls_loop_date,
                              args=(values['-TOUT-'], values['-COM-'], values['-RUNNING_DAYS-'],
                                    values['-START_HOUR-'], values['-END_HOUR-']), daemon=True).start()
+
+        elif event == "STOP DATE&TIME LOOP":
+            Controller.stop_date_loop(values['-COM-'])
+
 
 if __name__ == '__main__':
     the_gui()
