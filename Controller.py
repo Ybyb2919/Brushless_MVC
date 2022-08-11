@@ -93,10 +93,11 @@ def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_ho
     if file_name == "":
         print("No file chosen, please choose file to run")
     else:
-        schedule.every().day.at(start_hour).do(job_func=run_from_xls_loop_time,
-                                               file_name=file_name, COM_insert=COM_insert, end_hour=end_hour)
-        # schedule.every(5).seconds.do(job_func=run_from_xls_loop_time,
-        #                               file_name=file_name, COM_insert=COM_insert, end_hour=end_hour)
+        # schedule.every().day.at(start_hour).do(job_func=run_from_xls_loop_time,
+        #                                        file_name=file_name, COM_insert=COM_insert, end_hour=end_hour)
+        schedule.every(5).seconds.do(job_func=run_from_xls_loop_time,
+                                     file_name=file_name, COM_insert=COM_insert,
+                                     start_hour=start_hour, end_hour=end_hour)
         now = datetime.now()
         start_date = int(now.strftime("%d"))
         num_days = int(loop_count)
@@ -109,15 +110,18 @@ def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_ho
             schedule.run_pending()
             time.sleep(5)
         schedule.clear()
+        go_to_zero_off(COM_insert)
 
 
-def run_from_xls_loop_time(file_name, COM_insert, end_hour):
+
+def run_from_xls_loop_time(file_name, COM_insert, start_hour, end_hour):
     end_hour = end_hour[:2]
+    start_hour = start_hour[:2]
     try:
         global loop_run
         loop_run = True
         i = 1
-        while int(datetime.now().strftime("%H")) < int(end_hour) and loop_run:
+        while int(start_hour) < int(datetime.now().strftime("%H")) < int(end_hour) and loop_run:
             with Motor.connect(COM_insert) as motor:
                 print("Building Scheduler")
                 commands = Util1_Excel.read_xls(file_name)
@@ -129,7 +133,6 @@ def run_from_xls_loop_time(file_name, COM_insert, end_hour):
                 print("Iteration: ", i)
                 scheduler.run()
                 i += 1
-        go_to_zero_off(COM_insert)
     except:
         print("Can not run loop from .xls file")
         pass

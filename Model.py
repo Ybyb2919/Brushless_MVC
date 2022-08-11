@@ -73,17 +73,17 @@ class Motor:
         self.send_message(AK606Config(position=position, speed=0, kp=kp, kd=kd, torque=0).can_data)
         time.sleep(1)
 
-    def go_to_zero_off(self, position=0, kp=15, kd=4):
+    def go_to_zero_off(self):
         self.go_to_zero()
         time.sleep(0.5)
         self.stop()
         time.sleep(0.5)
 
     def return_position(self):
-        # response = self.serial.read(11)
-        # response_can_data = response[4:-1]
+        response = self.serial.read(11)
+        response_can_data = response[4:-1]
         x = ('ID: %d = ' % self.motor_id)
-        # x += (Field.unpack(response_can_data, [AK606Config.POSITION, AK606Config.SPEED]))
+        x += (Field.unpack(response_can_data, [AK606Config.POSITION, AK606Config.SPEED]))
         return x
 
     # def read_speed(self):
