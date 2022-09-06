@@ -112,7 +112,7 @@ def the_gui():
             sg.VSeperator(),
             sg.Column(file_run_section)
         ],
-        [sg.Output(size=(139, 15))]
+        # [sg.Output(size=(139, 15))]
     ]
 
     window = sg.Window('AK 60 Duo Controller', layout)
@@ -156,12 +156,6 @@ def the_gui():
             except:
                 pass
 
-        elif event == "Get position: ":
-            position1 = Controller.read_position(values['-COM-'], 1)
-            position2 = Controller.read_position(values['-COM-'], 2)
-            window["-POSITION1-"].update(position1)
-            window["-POSITION2-"].update(position2)
-
         elif event == "ON & RUN":
             threading.Thread(target=Controller.run_from_xls,
                              args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
@@ -185,6 +179,12 @@ def the_gui():
 
         elif event == "STOP DATE&TIME LOOP":
             Controller.stop_date_loop(values['-COM-'])
+
+        elif event == "Get position: ":
+            position1 = Controller.read_position(values['-COM-'], 1)
+            position2 = Controller.read_position(values['-COM-'], 2)
+            window["-POSITION1-"].update(position1)
+            window["-POSITION2-"].update(position2)
 
 
 if __name__ == '__main__':

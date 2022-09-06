@@ -143,7 +143,7 @@ def turn_on(COM_insert):
         print("Turning on")
         with Motor.connect(COM_insert) as motor:
             motor.init(1)
-            time.sleep(0.5)
+            time.sleep(1)
             motor.init(2)
         print("Motors ON")
     except:
@@ -152,12 +152,13 @@ def turn_on(COM_insert):
 
 
 def read_position(COM_insert, motor_id):
-    try:
-        with Motor.connect(COM_insert) as motor:
-            motor.select(motor_id)
-            return motor.return_position()
-    except:
-        pass
+    while True:
+        try:
+            with Motor.connect(COM_insert) as motor:
+                return motor.position_read(motor_id)
+        except:
+            # print('failed to read position')
+            pass
 
 
 def go_to_zero_off(COM_insert):
