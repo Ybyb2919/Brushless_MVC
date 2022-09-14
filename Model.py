@@ -1,10 +1,8 @@
 from serial import Serial
-from config import AK606Config
+from Config import AK606Config
 from contextlib import contextmanager
 from fields import Field
 import time
-
-global current_position
 
 class Motor:
     RLINK_PREFIX = bytes.fromhex('aaaf0fa1')
@@ -13,6 +11,7 @@ class Motor:
     def __init__(self, serial, motor_id=0):
         self.serial = serial
         self.motor_id = motor_id
+        self.current_position = 0
 
     @classmethod
     @contextmanager
@@ -36,11 +35,10 @@ class Motor:
         print(Field.unpack(response_can_data, [AK606Config.POSITION, AK606Config.SPEED]))
         position = (Field.unpack(response_can_data, [AK606Config.POSITION]))
         position = float((str(position[0]).split(':')[1])[0:15])
-        global current_position
-        current_position = position
+        self.current_position = position
 
 
-    def init(self, motor_id):
+    def init_motor(self, motor_id):
         """ init motor by id"""
         self.select(motor_id)
         self.start()  # enable motor
@@ -85,16 +83,15 @@ class Motor:
         self.stop()
         time.sleep(0.5)
 
-    def position_read(self, motor_id):
-        while True:
-            try:
-                global current_position
-                Motor.select(self, motor_id)
-                Motor.set_position(self, position=0, kp=0, kd=0)
-                # print(current_position)
-                return current_position
-            except:
-                pass
+    # def position_read(self, motor_id):
+    #     while True:
+    #         try:
+    #             Motor.select(self, motor_id)
+    #             Motor.set_position(self, position=0, kp=0, kd=0)
+    #             # print(self.current_position)
+    #             return self.current_position
+    #         except:
+    #             pass
 
 
     # def read_speed(self):

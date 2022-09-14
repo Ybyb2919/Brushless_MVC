@@ -1,8 +1,8 @@
 from Model import Motor
 import time
-import Util1_Excel
+import Util1Excel
 import sched
-from Util1_Excel import Command
+from Util1Excel import Command
 import schedule
 from datetime import datetime
 
@@ -10,7 +10,7 @@ scheduler = sched.scheduler()
 global loop_run
 global loop_date
 
-
+# add class controller and change global to def __init__
 def send_once(motor_id, position, kp, kd, COM_insert):
     try:
         with Motor.connect(COM_insert) as motor:
@@ -35,14 +35,16 @@ def run_command(motor: Motor, command: Command):
 
 
 def run_from_xls(file_name, COM_insert):
+    """ read cls and convert to command list"""
     try:
         turn_on(COM_insert)
         print("Building Scheduler")
-        commands = Util1_Excel.read_xls(file_name)
+        commands = Util1Excel.read_xls(file_name)
 
         with Motor.connect(COM_insert) as motor:
 
             for command in commands:
+                print(command.time)
                 scheduler.enter(command.time, priority=0,
                                 action=run_command, argument=(motor, command))
             time.sleep(0.3)
@@ -64,7 +66,7 @@ def run_from_xls_loop(file_name, COM_insert, loop_count):
         i = int(loop_count)
         turn_on(COM_insert)
         print("Building Scheduler")
-        commands = Util1_Excel.read_xls(file_name)
+        commands = Util1Excel.read_xls(file_name)
 
         print("Running from: " + file_name)
 
@@ -113,7 +115,6 @@ def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_ho
         go_to_zero_off(COM_insert)
 
 
-
 def run_from_xls_loop_time(file_name, COM_insert, start_hour, end_hour):
     end_hour = end_hour[:2]
     start_hour = start_hour[:2]
@@ -124,7 +125,7 @@ def run_from_xls_loop_time(file_name, COM_insert, start_hour, end_hour):
         while int(start_hour) < int(datetime.now().strftime("%H")) < int(end_hour) and loop_run:
             with Motor.connect(COM_insert) as motor:
                 print("Building Scheduler")
-                commands = Util1_Excel.read_xls(file_name)
+                commands = Util1Excel.read_xls(file_name)
 
                 print("Running from: " + file_name)
                 for command in commands:
@@ -142,9 +143,9 @@ def turn_on(COM_insert):
     try:
         print("Turning on")
         with Motor.connect(COM_insert) as motor:
-            motor.init(1)
+            motor.init_motor(1)
             time.sleep(1)
-            motor.init(2)
+            motor.init_motor(2)
         print("Motors ON")
     except:
         print("Can not Turn on motors. Check Motors arent on and if they are reset the system")
@@ -192,7 +193,7 @@ def stop_date_loop(COM_insert):
 
 
 def stop_scheduler():
-    global loop_run
+    global loop_run #
     loop_run = False
     list(map(scheduler.cancel, scheduler.queue))
     time.sleep(1)

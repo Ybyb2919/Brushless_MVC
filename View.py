@@ -20,7 +20,7 @@ def the_gui():
         ],
         [
             sg.Text("Motor ID:"),
-            sg.Combo(['1', '2'], default_value='1', key='-MOTORID-')
+            sg.Combo(['0', '1', '2'], default_value='1', key='-MOTORID-')
         ],
         [
             sg.Text("Position:"),
@@ -112,7 +112,7 @@ def the_gui():
             sg.VSeperator(),
             sg.Column(file_run_section)
         ],
-        # [sg.Output(size=(139, 15))]
+        [sg.Output(size=(139, 15))]
     ]
 
     window = sg.Window('AK 60 Duo Controller', layout)
