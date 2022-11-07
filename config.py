@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class AK606Config:
-    POSITION = FieldMetadata(16, -95.5, 95.5)
+    POSITION = FieldMetadata(16, -1000, 1000)
     SPEED = FieldMetadata(12, -45, 45)
     TORQUE = FieldMetadata(12, -18, 18)  # -9, 9?
     KP = FieldMetadata(12, 0, 500)

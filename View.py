@@ -12,7 +12,7 @@ def the_gui():
     position_test_demo = [
         [
             sg.Text("Please choose USB port: "),
-            sg.Combo(['COM3', 'COM6', 'COM7'], default_value='COM3', size=(10, 1), key='-COM-')
+            sg.Combo(['COM3', 'COM4', 'COM6', 'COM7'], default_value='COM3', size=(10, 1), key='-COM-')
 
         ],
         [
@@ -25,7 +25,7 @@ def the_gui():
         [
             sg.Text("Position:"),
             sg.In(size=(5, 1), key="-POSITION-"),
-            sg.Text("0-99")
+            sg.Text("-1000-1000")
 
         ],
         [
@@ -112,7 +112,7 @@ def the_gui():
             sg.VSeperator(),
             sg.Column(file_run_section)
         ],
-        # [sg.Output(size=(139, 15))]
+        [sg.Output(size=(139, 15))]
     ]
 
     window = sg.Window('AK 60 Duo Controller', layout)
