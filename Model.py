@@ -82,12 +82,3 @@ class Motor:
         self.stop
         time.sleep(0.5)
 
-    def read_position(self):
-        return current_position
-
-    # def read_speed(self):
-    #     return AK606Config.SPEED
-
-    # def read_torque(self):
-    #     return AK606Config.TORQUE
-

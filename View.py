@@ -63,10 +63,6 @@ def the_gui():
 
     file_run_section = [
         [
-            sg.Text("Current Position: "),
-            # sg.Text(size=(30, 1), text=Controller.read_position('COM3')),
-        ],
-        [
             sg.Text("The file chosen is: "),
             sg.In(size=(28, 1), key="-TOUT-")
         ],
