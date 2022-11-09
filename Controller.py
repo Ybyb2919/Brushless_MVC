@@ -43,6 +43,8 @@ def run_from_xls(file_name, COM_insert):
         with Motor.connect(COM_insert) as motor:
 
             for command in commands:
+                if command.motor_id == 0:
+                    scheduler.enter(command.time, priority=0, action=set_zero, argument=('COM3'))
                 scheduler.enter(command.time, priority=0,
                                 action=run_command, argument=(motor, command))
             time.sleep(0.3)
