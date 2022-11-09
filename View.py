@@ -20,7 +20,8 @@ def the_gui():
         ],
         [
             sg.Text("Motor ID:"),
-            sg.Combo(['1', '2'], default_value='1', key='-MOTORID-')
+            sg.Combo(['1', '2'], default_value='1', key='-MOTORID-'),
+            sg.Button("SET ZERO", button_color=('black', 'grey'))
         ],
         [
             sg.Text("Position:"),
@@ -36,15 +37,13 @@ def the_gui():
         [
             sg.Text("Kd:        "),
             sg.In(size=(5, 1), key="-KD-"),
-            sg.Text("0-5")
-
+            sg.Text("0-5"),
         ],
         [
             sg.Button("TURN ON"),
             sg.Button("SEND ONCE"),
-            sg.Button("STOP")
-        ]
-
+            sg.Button("STOP", button_color=('white', 'orange'))
+        ],
     ]
 
     file_list_column = [
@@ -73,14 +72,14 @@ def the_gui():
             sg.Button("LOOP"),
             sg.Text("Loop count:"),
             sg.Combo(['2', '5', '10', '20', '50', '100', '1000'], default_value='10', key='-LOOP_COUNT-'),
-            sg.Button("MOTOR STOP")
+            sg.Button("MOTOR STOP", button_color=('white', 'orange'))
         ],
         [
             sg.HSeparator()
         ],
         [
             sg.Button("LOOP DATE&TIME"),
-            sg.Button("STOP DATE&TIME LOOP")
+            sg.Button("STOP DATE&TIME LOOP", button_color=('white', 'orange'))
         ],
         [
             sg.Text("Run for X days: "),
