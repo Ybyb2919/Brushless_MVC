@@ -19,6 +19,9 @@ def the_gui():
             sg.Text("Position test controller: ", font=BOLD)
         ],
         [
+            sg.Button("TURN ON", button_color=('black', 'green')),
+        ],
+        [
             sg.Text("Motor ID:"),
             sg.Combo(['1', '2'], default_value='1', key='-MOTORID-'),
             sg.Button("SET ZERO", button_color=('black', 'grey'))
@@ -40,9 +43,8 @@ def the_gui():
             sg.Text("0-5"),
         ],
         [
-            sg.Button("TURN ON"),
             sg.Button("SEND ONCE"),
-            sg.Button("STOP", button_color=('white', 'orange'))
+            sg.Button("STOP", button_color=('black', 'orange'))
         ],
     ]
 
@@ -72,14 +74,14 @@ def the_gui():
             sg.Button("LOOP"),
             sg.Text("Loop count:"),
             sg.Combo(['2', '5', '10', '20', '50', '100', '1000'], default_value='10', key='-LOOP_COUNT-'),
-            sg.Button("MOTOR STOP", button_color=('white', 'orange'))
+            sg.Button("STOP LOOP", button_color=('black', 'orange'))
         ],
         [
             sg.HSeparator()
         ],
         [
             sg.Button("LOOP DATE&TIME"),
-            sg.Button("STOP DATE&TIME LOOP", button_color=('white', 'orange'))
+            sg.Button("STOP DATE&TIME LOOP", button_color=('black', 'orange'))
         ],
         [
             sg.Text("Run for X days: "),
@@ -124,7 +126,7 @@ def the_gui():
         elif event == "STOP":
             threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
 
-        elif event == "MOTOR STOP":
+        elif event == "STOP LOOP":
             threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "-FOLDER-":
@@ -173,6 +175,11 @@ def the_gui():
 
         elif event == "STOP DATE&TIME LOOP":
             Controller.stop_date_loop(values['-COM-'])
+
+        elif event == "SET ZERO":
+            Controller.set_zero(values['-COM-'])
+
+
 
 
 if __name__ == '__main__':

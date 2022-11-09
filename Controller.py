@@ -151,15 +151,17 @@ def turn_on(COM_insert):
         pass
 
 
-def read_position(COM_insert, motor_id):
-    while True:
-        try:
-            with Motor.connect(COM_insert) as motor:
-                return motor.position_read(motor_id)
-        except:
-            # print('failed to read position')
-            pass
-
+def set_zero(COM_insert):
+    try:
+        print("Setting current position to ZERO")
+        with Motor.connect(COM_insert) as motor:
+            motor.select(1)
+            motor.reset()
+            motor.select(2)
+            motor.reset()
+    except:
+        print("Can not set position to ZERO - unknown problem")
+        pass
 
 def go_to_zero_off(COM_insert):
     try:
