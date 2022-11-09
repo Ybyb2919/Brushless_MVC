@@ -25,7 +25,7 @@ def the_gui():
         [
             sg.Text("Position:"),
             sg.In(size=(5, 1), key="-POSITION-"),
-            sg.Text("-1000-1000")
+            sg.Text("(-95.5) - 95.5")
 
         ],
         [
@@ -61,11 +61,6 @@ def the_gui():
     ]
 
     file_run_section = [
-        [
-            sg.Button("Get position: "),
-            sg.In(size=(15, 1), key="-POSITION1-"),
-            sg.In(size=(15, 1), key="-POSITION2-")
-        ],
         [
             sg.Text("The file chosen is: "),
             sg.In(size=(28, 1), key="-TOUT-")
@@ -179,12 +174,6 @@ def the_gui():
 
         elif event == "STOP DATE&TIME LOOP":
             Controller.stop_date_loop(values['-COM-'])
-
-        elif event == "Get position: ":
-            position1 = Controller.read_position(values['-COM-'], 1)
-            position2 = Controller.read_position(values['-COM-'], 2)
-            window["-POSITION1-"].update(position1)
-            window["-POSITION2-"].update(position2)
 
 
 if __name__ == '__main__':
