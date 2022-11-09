@@ -29,7 +29,7 @@ def run_command(motor: Motor, command: Command):
     if command.position is not None:
         motor.set_position(command.position, command.kp, command.kd)
     elif command.speed is not None:
-        motor.set_speed(command.speed)
+        motor.set_speed(command.speed, command.kd)
     else:
         motor.set_torque(command.torque)
 
@@ -44,9 +44,8 @@ def run_from_xls(file_name, COM_insert):
 
             for command in commands:
                 if command.motor_id == 0:
-                    scheduler.enter(command.time, priority=0, action=set_zero, argument=('COM3'))
-                scheduler.enter(command.time, priority=0,
-                                action=run_command, argument=(motor, command))
+                    scheduler.enter(command.time, priority=0, action=set_zero, argument=COM_insert)
+                scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command))
             time.sleep(0.3)
             print("Running from: " + file_name)
             print("--- STARTING SEQUENCE ---")
@@ -154,8 +153,8 @@ def turn_on(COM_insert):
 
 
 def set_zero(COM_insert):
+    print("Setting current position to ZERO")
     try:
-        print("Setting current position to ZERO")
         with Motor.connect(COM_insert) as motor:
             motor.select(1)
             motor.reset()

@@ -21,15 +21,18 @@ def read_xls(file: Path) -> List[Command]:
     commands = []
     prev_speed = False
     for index, row in table.iterrows():
+        print(prev_speed)
         time = row['time']
         motor_id = int(row['motor_id'])
-        if row['position'] is not None:
+        if not pandas.isnull(row['position']):
             if prev_speed:
-                commands.append(Command(time, 0, None, None, None, None, None))
+                # commands.append(Command(time, 0, None, None, None, None, None))
+                commands.append(Command(time-0.2, motor_id, None, 0, None, None, 0))
+                ### when sending the second velocity command or any command after speed the motor does not accept it
             commands.append(Command(time, motor_id, row['position'], None, None, row['kp'], row['kd']))
             prev_speed = False
-        elif row['speed'] is not None:
-            commands.append(Command(time, motor_id, None, row['speed'], None, None, None))
+        elif not pandas.isnull(['speed']):
+            commands.append(Command(time, motor_id, None, row['speed'], None, None, row['kd']))
             prev_speed = True
         elif row['torque'] is not None:
             commands.append(Command(time, motor_id, None, None, row['torque'], None, None))
