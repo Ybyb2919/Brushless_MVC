@@ -25,14 +25,6 @@ class Controller:
             time.sleep(1)
             motor.init(2)
 
-    def read_position(COM_insert):
-        try:
-            with Motor.connect(COM_insert) as motor:
-                return motor.read_position()
-        except:
-            print("Cannot read position")
-            pass
-
     def go_to_zero_off(COM_insert):
         try:
             print("--- GO TO ZERO & OFF ---")
