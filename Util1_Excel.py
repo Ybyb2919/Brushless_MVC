@@ -26,8 +26,8 @@ def read_xls(file: Path) -> List[Command]:
         motor_id = int(row['motor_id'])
         if not pandas.isnull(row['position']):
             if prev_speed:
-                # commands.append(Command(time, 0, None, None, None, None, None))
-                commands.append(Command(time-0.2, motor_id, None, 0, None, None, 0))
+                commands.append(Command(time-0.2, 0, None, None, None, None, None))
+                commands.append(Command(time-0.5, motor_id, None, 0, None, None, 0))
                 ### when sending the second velocity command or any command after speed the motor does not accept it
             commands.append(Command(time, motor_id, row['position'], None, None, row['kp'], row['kd']))
             prev_speed = False

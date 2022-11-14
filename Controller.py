@@ -23,10 +23,15 @@ def send_once(motor_id, position, kp, kd, COM_insert):
         pass
 
 
-def run_command(motor: Motor, command: Command):
+def run_command(motor: Motor, command: Command, COM_insert):
     motor.select(command.motor_id)
 
-    if command.position is not None:
+    if command.motor_id == 0:
+        motor.select(1)
+        motor.reset()
+        motor.select(2)
+        motor.reset()
+    elif command.position is not None:
         motor.set_position(command.position, command.kp, command.kd)
     elif command.speed is not None:
         motor.set_speed(command.speed, command.kd)
@@ -35,29 +40,29 @@ def run_command(motor: Motor, command: Command):
 
 
 def run_from_xls(file_name, COM_insert):
-    try:
-        turn_on(COM_insert)
-        print("Building Scheduler")
-        commands = Util1_Excel.read_xls(file_name)
+    # try:
+    turn_on(COM_insert)
+    print("Building Scheduler")
+    commands = Util1_Excel.read_xls(file_name)
 
-        with Motor.connect(COM_insert) as motor:
+    with Motor.connect(COM_insert) as motor:
 
-            for command in commands:
-                if command.motor_id == 0:
-                    scheduler.enter(command.time, priority=0, action=set_zero, argument=COM_insert)
-                scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command))
-            time.sleep(0.3)
-            print("Running from: " + file_name)
-            print("--- STARTING SEQUENCE ---")
-            scheduler.run()
+        for command in commands:
+            if command.motor_id == 0:
+                scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command, COM_insert))
+            scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command, COM_insert))
+        time.sleep(0.3)
+        print("Running from: " + file_name)
+        print("--- STARTING SEQUENCE ---")
+        scheduler.run()
 
-        print("--- GO TO ZERO & OFF ---")
-        go_to_zero_off(COM_insert)
+    print("--- GO TO ZERO & OFF ---")
+    go_to_zero_off(COM_insert)
 
-        print("--- END OF SEQUENCE ---")
-    except:
-        print("Can not run sequence from .xls file")
-        pass
+    print("--- END OF SEQUENCE ---")
+    # except:
+    #     print("Can not run sequence from .xls file")
+    #     pass
 
 
 def run_from_xls_loop(file_name, COM_insert, loop_count):
@@ -154,15 +159,14 @@ def turn_on(COM_insert):
 
 def set_zero(COM_insert):
     print("Setting current position to ZERO")
-    try:
-        with Motor.connect(COM_insert) as motor:
-            motor.select(1)
-            motor.reset()
-            motor.select(2)
-            motor.reset()
-    except:
-        print("Can not set position to ZERO - unknown problem")
-        pass
+    # try:
+    Motor.select(1)
+    Motor.reset()
+    Motor.select(2)
+    Motor.reset()
+    # except:
+    #     print("Can not set position to ZERO - unknown problem")
+    #     pass
 
 def go_to_zero_off(COM_insert):
     try:
