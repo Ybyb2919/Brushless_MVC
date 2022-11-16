@@ -44,9 +44,9 @@ class Motor:
         """ init motor by id"""
         self.select(motor_id)
         self.start()  # enable motor
-        time.sleep(1)
+        time.sleep(0.3)
         self.reset()  # goto zero
-        time.sleep(1)
+        time.sleep(0.3)
         self.set_speed(0, 0)
 
     def select(self, motor_id):

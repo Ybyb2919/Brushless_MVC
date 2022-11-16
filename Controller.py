@@ -41,7 +41,6 @@ def run_command(motor: Motor, command: Command):
 
 def run_from_xls(file_name, COM_insert):
     try:
-        turn_on(COM_insert)
         print("Building Scheduler")
         commands = Util1_Excel.read_xls(file_name)
 
@@ -88,11 +87,9 @@ def run_from_xls_loop(file_name, COM_insert, loop_count):
 
         print("--- SET ZERO & OFF ---")
         set_zero_off(COM_insert)
-
     except:
         print("Can not run loop from .xls file")
         pass
-
 
 
 def run_from_xls_loop_time(file_name, COM_insert, start_hour, end_hour):
@@ -148,16 +145,15 @@ def turn_on(COM_insert):
         print("Turning on")
         with Motor.connect(COM_insert) as motor:
             motor.init(1)
-            time.sleep(1)
+            time.sleep(0.3)
             motor.init(2)
-        print("Motors ON")
+        print("MOTORS ON")
     except:
         print("Can not Turn on motors. Check Motors arent on and if they are reset the system")
         pass
 
 
 def set_zero(COM_insert):
-    print("Setting current position to ZERO")
     try:
         with Motor.connect(COM_insert) as motor:
             motor.select(1)
@@ -168,15 +164,17 @@ def set_zero(COM_insert):
         print("Can not set position to ZERO - unknown problem")
         pass
 
+
 def motors_off(COM_insert):
     try:
         with Motor.connect(COM_insert) as motor:
             motor.select(1)
             motor.set_speed(0, 0)
-            motor.reset()
+            motor.stop()
             motor.select(2)
             motor.set_speed(0, 0)
-            motor.reset()
+            motor.stop()
+        print("MOTORS OFF")
     except:
         print("Can not set position to ZERO - unknown problem")
         pass
@@ -192,6 +190,8 @@ def set_zero_off(COM_insert):
     except:
         print("Could not turn off motors")
         pass
+
+
 def stop_date_loop(COM_insert):
     try:
         print("Stopping loop and turning motors off")

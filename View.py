@@ -19,7 +19,7 @@ def the_gui():
             sg.Text("Position test controller: ", font=BOLD)
         ],
         [
-            sg.Button("TURN ON", button_color=('black', 'green')),
+            sg.Button("MOTORS ON", button_color=('black', 'green')),
         ],
         [
             sg.Text("Motor ID:"),
@@ -70,7 +70,7 @@ def the_gui():
             sg.HSeparator()
         ],
         [
-            sg.Button("ON & RUN"),
+            sg.Button("SINGLE RUN"),
             sg.Button("LOOP"),
             sg.Text("Loop count:"),
             sg.Combo(['2', '5', '10', '20', '50', '100', '1000'], default_value='10', key='-LOOP_COUNT-'),
@@ -120,7 +120,7 @@ def the_gui():
             Controller.set_zero_off(values['-COM-'])
             break
 
-        elif event == "TURN ON":
+        elif event == "MOTORS ON":
             threading.Thread(target=Controller.turn_on, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "STOP":
@@ -152,7 +152,7 @@ def the_gui():
             except:
                 pass
 
-        elif event == "ON & RUN":
+        elif event == "SINGLE RUN":
             threading.Thread(target=Controller.run_from_xls,
                              args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
 
