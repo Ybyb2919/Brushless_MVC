@@ -117,17 +117,17 @@ def the_gui():
         event, values = window.read()
 
         if event == "EXIT" or event == sg.WIN_CLOSED:
-            Controller.go_to_zero_off(values['-COM-'])
+            Controller.set_zero_off(values['-COM-'])
             break
 
         elif event == "TURN ON":
             threading.Thread(target=Controller.turn_on, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "STOP":
-            threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
+            threading.Thread(target=Controller.set_zero_off, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "STOP LOOP":
-            threading.Thread(target=Controller.go_to_zero_off, args=(values['-COM-'],), daemon=True).start()
+            threading.Thread(target=Controller.set_zero_off, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "-FOLDER-":
             folder = values["-FOLDER-"]
