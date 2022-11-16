@@ -70,7 +70,6 @@ class Motor:
         self.send_message(AK606Config(position=position, speed=0, kp=kp, kd=kd, torque=0).can_data)
 
     def set_speed(self, speed, kd):
-        print("speed:", speed, "kd:", kd)
         self.send_message(AK606Config(position=0, speed=speed, kp=0, kd=kd, torque=0).can_data)
 
     def set_torque(self, torque, kd=0.2):
@@ -92,7 +91,6 @@ class Motor:
                 global current_position
                 Motor.select(self, motor_id)
                 Motor.set_position(self, position=0, kp=0, kd=0)
-                # print(current_position)
                 return current_position
             except:
                 pass

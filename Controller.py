@@ -23,7 +23,7 @@ def send_once(motor_id, position, kp, kd, COM_insert):
         pass
 
 
-def run_command(motor: Motor, command: Command, COM_insert):
+def run_command(motor: Motor, command: Command):
     motor.select(command.motor_id)
 
     if command.motor_id == 0:
@@ -41,25 +41,24 @@ def run_command(motor: Motor, command: Command, COM_insert):
 
 def run_from_xls(file_name, COM_insert):
     # try:
-    turn_on(COM_insert)
-    print("Building Scheduler")
-    commands = Util1_Excel.read_xls(file_name)
+        turn_on(COM_insert)
+        print("Building Scheduler")
+        commands = Util1_Excel.read_xls(file_name)
 
-    with Motor.connect(COM_insert) as motor:
+        with Motor.connect(COM_insert) as motor:
 
-        for command in commands:
-            if command.motor_id == 0:
-                scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command, COM_insert))
-            scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command, COM_insert))
-        time.sleep(0.3)
-        print("Running from: " + file_name)
-        print("--- STARTING SEQUENCE ---")
-        scheduler.run()
+            for command in commands:
+                if command.motor_id == 0:
+                    scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command))
+                scheduler.enter(command.time, priority=0, action=run_command, argument=(motor, command))
+            time.sleep(0.3)
+            print("Running from: " + file_name)
+            print("--- STARTING SEQUENCE ---")
+            scheduler.run()
 
-    print("--- GO TO ZERO & OFF ---")
-    go_to_zero_off(COM_insert)
-
-    print("--- END OF SEQUENCE ---")
+        print("--- GO TO ZERO & OFF ---")
+        set_zero_off(COM_insert)
+        print("--- END OF SEQUENCE ---")
     # except:
     #     print("Can not run sequence from .xls file")
     #     pass
@@ -89,7 +88,6 @@ def run_from_xls_loop(file_name, COM_insert, loop_count):
         print("--- GO TO ZERO & OFF ---")
         go_to_zero_off(COM_insert)
 
-        print("--- END OF SEQUENCE ---")
     except:
         print("Can not run loop from .xls file")
         pass
@@ -159,34 +157,40 @@ def turn_on(COM_insert):
 
 def set_zero(COM_insert):
     print("Setting current position to ZERO")
-    # try:
-    Motor.select(1)
-    Motor.reset()
-    Motor.select(2)
-    Motor.reset()
-    # except:
-    #     print("Can not set position to ZERO - unknown problem")
-    #     pass
-
-def go_to_zero_off(COM_insert):
     try:
-        print("Reset to zero position and turning off")
-        stop_scheduler()
-        time.sleep(1)
         with Motor.connect(COM_insert) as motor:
-            time.sleep(0.25)
             motor.select(1)
-            motor.go_to_zero_off()
-            time.sleep(0.5)
-
+            motor.reset()
             motor.select(2)
-            motor.go_to_zero_off()
-        print("Motors OFF")
+            motor.reset()
     except:
-        print("Could not turn off motors")
+        print("Can not set position to ZERO - unknown problem")
+        pass
+
+def motors_off(COM_insert):
+    try:
+        with Motor.connect(COM_insert) as motor:
+            motor.select(1)
+            motor.set_speed(0, 0)
+            motor.reset()
+            motor.select(2)
+            motor.set_speed(0, 0)
+            motor.reset()
+    except:
+        print("Can not set position to ZERO - unknown problem")
         pass
 
 
+def set_zero_off(COM_insert):
+    try:
+        stop_scheduler()
+        time.sleep(0.3)
+        set_zero(COM_insert)
+        time.sleep(0.3)
+        motors_off(COM_insert)
+    except:
+        print("Could not turn off motors")
+        pass
 def stop_date_loop(COM_insert):
     try:
         print("Stopping loop and turning motors off")
