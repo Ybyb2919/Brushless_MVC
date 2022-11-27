@@ -39,7 +39,6 @@ class Motor:
         global current_position
         current_position = position
 
-
     def init(self, motor_id):
         """ init motor by id"""
         self.select(motor_id)
@@ -64,8 +63,6 @@ class Motor:
     def reset(self):
         """ reset motor """
         self.send_message(bytes.fromhex('fffffffffffffffe'))
-        # self.go_to_zero()
-
     def set_position(self, position, kp, kd):
         self.send_message(AK606Config(position=position, speed=0, kp=kp, kd=kd, torque=0).can_data)
 

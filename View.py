@@ -117,7 +117,7 @@ def the_gui():
         event, values = window.read()
 
         if event == "EXIT" or event == sg.WIN_CLOSED:
-            Controller.set_zero_off(values['-COM-'])
+            Controller.set_zero(values['-COM-'])
             break
 
         elif event == "MOTORS ON":

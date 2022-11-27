@@ -158,8 +158,10 @@ def set_zero(COM_insert):
         with Motor.connect(COM_insert) as motor:
             motor.select(1)
             motor.reset()
+            motor.set_position(0, 0, 0)
             motor.select(2)
             motor.reset()
+            motor.set_position(0, 0, 0)
     except:
         print("Can not set position to ZERO - unknown problem")
         pass
