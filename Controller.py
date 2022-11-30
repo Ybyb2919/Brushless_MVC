@@ -54,9 +54,6 @@ def run_from_xls(file_name, COM_insert):
             print("Running from: " + file_name)
             print("--- STARTING SEQUENCE ---")
             scheduler.run()
-
-        print("--- SET ZERO & OFF ---")
-        set_zero_off(COM_insert)
         print("--- END OF SEQUENCE ---")
     except:
         print("Can not run sequence from .xls file")
