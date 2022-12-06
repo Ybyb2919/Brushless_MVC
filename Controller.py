@@ -1,3 +1,5 @@
+from func_timeout import func_timeout
+
 from Model import Motor
 import time
 import Util1_Excel
@@ -143,7 +145,7 @@ def turn_on(COM_insert):
         try:
             print("Turning on")
             with Motor.connect(COM_insert) as motor:
-                motor.init(1)
+                func_timeout(3, motor.init, args='1')()
                 time.sleep(0.3)
                 motor.init(2)
             print("MOTORS ON")
@@ -153,6 +155,8 @@ def turn_on(COM_insert):
             time.sleep(1)
             x += 1
             continue
+
+    print("Can not TURN ON motors. Please contact admin")
 
 
 
