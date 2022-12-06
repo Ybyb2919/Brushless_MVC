@@ -138,16 +138,23 @@ def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_ho
 
 
 def turn_on(COM_insert):
-    try:
-        print("Turning on")
-        with Motor.connect(COM_insert) as motor:
-            motor.init(1)
-            time.sleep(0.3)
-            motor.init(2)
-        print("MOTORS ON")
-    except:
-        print("Can not Turn on motors. Check Motors arent on and if they are reset the system")
-        pass
+    x = 0
+    while x < 3:
+        try:
+            print("Turning on")
+            with Motor.connect(COM_insert) as motor:
+                motor.init(1)
+                time.sleep(0.3)
+                motor.init(2)
+            print("MOTORS ON")
+            break
+        except:
+            print("Can not Turn on motors. System trying again")
+            time.sleep(1)
+            x += 1
+            continue
+
+
 
 
 def set_zero(COM_insert):
