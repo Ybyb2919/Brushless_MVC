@@ -145,7 +145,7 @@ def turn_on(COM_insert):
         try:
             print("Turning on")
             with Motor.connect(COM_insert) as motor:
-                func_timeout(3, motor.init, args='1')()
+                func_timeout(3, motor.init, args='1')
                 time.sleep(0.3)
                 motor.init(2)
             print("MOTORS ON")
