@@ -1,5 +1,4 @@
 from func_timeout import func_timeout
-
 from Model import Motor
 import time
 import Util1_Excel
