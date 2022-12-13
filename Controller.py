@@ -66,7 +66,6 @@ def run_from_xls(file_name, COM_insert):
 def run_from_xls_loop(file_name, COM_insert, loop_count):
     try:
         i = int(loop_count)
-        turn_on(COM_insert)
         print("Building Scheduler")
         commands = Util1_Excel.read_xls(file_name)
 
@@ -85,7 +84,7 @@ def run_from_xls_loop(file_name, COM_insert, loop_count):
                 scheduler.run()
 
         print("--- SET ZERO & OFF ---")
-        set_zero_off(COM_insert)
+        # set_zero_off(COM_insert)
     except:
         print("Can not run loop from .xls file")
         pass
@@ -169,13 +168,13 @@ def set_zero(COM_insert):
 def interfere(file_name, COM_insert, loop_count, inter_file):
     try:
         print("Encountered interference! Running interference sequence")
-        stop_loop(COM_insert)
-        run_from_xls(inter_file)
+        goto_zero_stop_loop(COM_insert)
+        run_from_xls(inter_file, COM_insert)
         time.sleep(1)
         run_from_xls_loop(file_name, COM_insert, loop_count)
     except:
         try:
-            print("Can not run" + inter_file + "returning to loop" + file_name)
+            print("Can not run " + inter_file + " returning to loop " + file_name)
             run_from_xls_loop(file_name, COM_insert, loop_count)
         except:
             print("Stuck, please restart!")
@@ -209,13 +208,17 @@ def set_zero_off(COM_insert):
         pass
 
 
-def stop_loop(COM_insert):
+def goto_zero_stop_loop(COM_insert):
     try:
-        print("Stopping loop and turning motors off")
-        set_zero_off(COM_insert)
-
+        stop_scheduler()
+        with Motor.connect(COM_insert) as motor:
+            motor.select(1)
+            motor.set_position(0, 2, 1)
+            motor.select(2)
+            motor.set_position(0, 2, 1)
+        time.sleep(0.1)
     except:
-        print("Could not stop loop")
+        print("Could not go to zero")
         pass
 
 

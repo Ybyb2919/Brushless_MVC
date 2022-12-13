@@ -109,7 +109,6 @@ def the_gui():
         ],
     ]
 
-
     layout = [
         [
             sg.Column(position_test_demo),
@@ -137,7 +136,7 @@ def the_gui():
             threading.Thread(target=Controller.set_zero_off, args=(values['-COM-'],), daemon=True).start()
 
         elif event == "STOP LOOP":
-            threading.Thread(target=Controller.set_zero_off, args=(values['-COM-'],), daemon=True).start()
+            threading.Thread(target=Controller.goto_zero_stop_loop(), args=(values['-COM-'],), daemon=True).start()
 
         elif event == "-FOLDER-":
             folder = values["-FOLDER-"]
@@ -183,7 +182,7 @@ def the_gui():
 
         elif event == "LOOP":
             threading.Thread(target=Controller.run_from_xls_loop,
-                             args=(values['-TOUT-'], values['-COM-'], values['-LOOP_COUNT-']), daemon=True).start()
+                             args=(values['-TOUT-'], values['-COM-'], values['-LOOP COUNT-']), daemon=True).start()
 
         elif event == "LOOP DATE&TIME":
             threading.Thread(target=Controller.run_from_xls_loop_date,
@@ -197,7 +196,7 @@ def the_gui():
             Controller.set_zero(values['-COM-'])
 
         elif event == "INTERFERE":
-            Controller.interfere(values['-TOUT-'], values['-COM-'], values['-LOOP COUNT-'], values['-INTER_FILE-'])
+            Controller.interfere(values['-TOUT-'], values['-COM-'], values['-LOOP COUNT-'], values['-INTER FILE-'])
 
 
 if __name__ == '__main__':
