@@ -30,7 +30,6 @@ def the_gui():
             sg.Text("Position:"),
             sg.In(size=(5, 1), key="-POSITION-"),
             sg.Text("(-95.5) - 95.5")
-
         ],
         [
             sg.Text("Kp:        "),
@@ -60,7 +59,6 @@ def the_gui():
             )
         ],
     ]
-
     file_run_section = [
         [
             sg.Text("The file chosen is: "),
@@ -73,7 +71,7 @@ def the_gui():
             sg.Button("SINGLE RUN"),
             sg.Button("LOOP"),
             sg.Text("Loop count:"),
-            sg.Combo(['2', '5', '10', '20', '50', '100', '1000'], default_value='10', key='-LOOP_COUNT-'),
+            sg.Combo(['2', '5', '10', '20', '50', '100', '1000'], default_value='10', key='-LOOP COUNT-'),
             sg.Button("STOP LOOP", button_color=('black', 'orange'))
         ],
         [
@@ -95,10 +93,22 @@ def the_gui():
             sg.HSeparator()
         ],
         [
+            sg.In(size=(21, 1), enable_events=True, key="-INTER FILE-"),
+            sg.FileBrowse(),
+        ],
+        [
+            sg.Text("Hit to run interference:"),
+            sg.Button('INTERFERE'),
+        ],
+        [
+            sg.HSeparator()
+        ],
+        [
             sg.Text("Hit EXIT to terminate the program:"),
             sg.Button('EXIT', font='Helvetica 12 bold italic', button_color=('black', 'red'), border_width=0, ),
         ],
     ]
+
 
     layout = [
         [
@@ -152,6 +162,13 @@ def the_gui():
             except:
                 pass
 
+        elif event == "-INTER FILE-":
+            try:
+                filename = values["-INTER FILE-"]
+                window["-INTER FILE-"].update(filename)
+            except:
+                pass
+
         elif event == "SINGLE RUN":
             threading.Thread(target=Controller.run_from_xls,
                              args=(values['-TOUT-'], values['-COM-'],), daemon=True).start()
@@ -179,7 +196,8 @@ def the_gui():
         elif event == "SET ZERO":
             Controller.set_zero(values['-COM-'])
 
-
+        elif event == "INTERFERE":
+            Controller.interfere(values['-TOUT-'], values['-COM-'], values['-LOOP COUNT-'], values['-INTER_FILE-'])
 
 
 if __name__ == '__main__':

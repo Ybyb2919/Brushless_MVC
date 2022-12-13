@@ -5,6 +5,8 @@ import sched
 from Util1_Excel import Command
 import schedule
 from datetime import datetime
+import View
+
 
 scheduler = sched.scheduler()
 global loop_run
@@ -164,6 +166,22 @@ def set_zero(COM_insert):
         pass
 
 
+def interfere(file_name, COM_insert, loop_count, inter_file):
+    try:
+        print("Encountered interference! Running interference sequence")
+        stop_loop(COM_insert)
+        run_from_xls(inter_file)
+        time.sleep(1)
+        run_from_xls_loop(file_name, COM_insert, loop_count)
+    except:
+        try:
+            print("Can not run" + inter_file + "returning to loop" + file_name)
+            run_from_xls_loop(file_name, COM_insert, loop_count)
+        except:
+            print("Stuck, please restart!")
+            pass
+
+
 def motors_off(COM_insert):
     try:
         with Motor.connect(COM_insert) as motor:
@@ -188,6 +206,16 @@ def set_zero_off(COM_insert):
         motors_off(COM_insert)
     except:
         print("Could not turn off motors")
+        pass
+
+
+def stop_loop(COM_insert):
+    try:
+        print("Stopping loop and turning motors off")
+        set_zero_off(COM_insert)
+
+    except:
+        print("Could not stop loop")
         pass
 
 

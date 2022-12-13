@@ -6,6 +6,7 @@ import time
 
 global current_position
 
+
 class Motor:
     RLINK_PREFIX = bytes.fromhex('aaaf0fa1')
     STARTUP_RLINK_MESSAGE = bytes.fromhex('aaaf07a2a101a4')
