@@ -155,7 +155,9 @@ class Controller:
         try:
             print("Encountered interference! Running interference sequence")
             self.stop_run(COM_insert)
+            time.sleep(0.1)
             self.set_position_zero(COM_insert)
+            time.sleep(0.2)
             self.run_from_xls(inter_file, COM_insert)
             time.sleep(0.5)
             self.run_from_xls_loop(file_name, COM_insert, loop_count)
@@ -171,7 +173,7 @@ class Controller:
     def stop_run(self, COM_insert):
         try:
             self.stop_scheduler()
-            time.sleep(0.2)
+            time.sleep(0.3)
             print("RUN STOPPED")
         except Exception as e:
             print("Could not stop run")
