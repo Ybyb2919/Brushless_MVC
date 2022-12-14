@@ -44,9 +44,9 @@ class Motor:
         """ init motor by id"""
         self.select(motor_id)
         self.start()  # enable motor
-        time.sleep(0.3)
+        time.sleep(0.1)
         self.reset()  # goto zero
-        time.sleep(0.3)
+        time.sleep(0.1)
         self.set_speed(0, 0)
 
     def select(self, motor_id):
@@ -64,6 +64,7 @@ class Motor:
     def reset(self):
         """ reset motor """
         self.send_message(bytes.fromhex('fffffffffffffffe'))
+
     def set_position(self, position, kp, kd):
         self.send_message(AK606Config(position=position, speed=0, kp=kp, kd=kd, torque=0).can_data)
 
