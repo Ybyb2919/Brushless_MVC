@@ -26,7 +26,8 @@ class Controller:
             print("Can not execute single command")
             pass
 
-    def run_command(self, motor: Motor, command: Command):
+    @staticmethod
+    def run_command(motor: Motor, command: Command):
         motor.select(command.motor_id)
 
         if command.motor_id == 0:
@@ -52,7 +53,7 @@ class Controller:
                         print(self.scheduler)
                         self.scheduler.enter(command.time, priority=0, action=self.run_command, argument=(motor, command))
                     self.scheduler.enter(command.time, priority=0, action=self.run_command, argument=(motor, command))
-                time.sleep(0.1)
+                time.sleep(0.3)
                 print("Running from: " + file_name)
                 print("--- STARTING SEQUENCE ---")
                 self.scheduler.run()
@@ -61,7 +62,6 @@ class Controller:
             print("Can not run sequence from .xls file")
             print(e)
 
-    # Looping from XLS does not zero positions between iterations and does not stop velocity commands
     def run_from_xls_loop(self, file_name, COM_insert, loop_count):
         try:
             i = int(loop_count)
@@ -127,7 +127,8 @@ class Controller:
                 schedule.run_pending()
                 time.sleep(5)
 
-    def motors_on(self, COM_insert):
+    @staticmethod
+    def motors_on(COM_insert):
         try:
             print("Turning on")
             with Motor.connect(COM_insert) as motor:
@@ -155,14 +156,14 @@ class Controller:
         try:
             print("Encountered interference! Running interference sequence")
             self.stop_run(COM_insert)
-            time.sleep(0.1)
+            time.sleep(1)
             self.motors_off(COM_insert)
-            time.sleep(0.2)
+            time.sleep(1)
             self.motors_on(COM_insert)
             self.set_position_zero(COM_insert)
-            time.sleep(0.2)
+            time.sleep(1)
             self.run_from_xls(inter_file, COM_insert)
-            time.sleep(0.5)
+            time.sleep(1)
             self.run_from_xls_loop(file_name, COM_insert, loop_count)
         except:
             try:
