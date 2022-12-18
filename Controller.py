@@ -13,6 +13,7 @@ class Controller:
         self.loop_date = None
         self.loop_run = None
         self.scheduler = sched.scheduler()
+        self.motor_ids = None
 
     @staticmethod
     def send_once(motor_id, position, kp, kd, COM_insert):
@@ -139,6 +140,7 @@ class Controller:
             print("Can not Turn on motors. Check Motors arent on and if they are reset the system")
             print(e)
 
+    # Method turns motors off
     @staticmethod
     def motors_off(COM_insert):
         try:
@@ -152,6 +154,7 @@ class Controller:
             print("Can not turn motors off")
             print(e)
 
+    # Method stops current run and runs interference sequence as stated in class View
     def interfere(self, file_name, COM_insert, loop_count, inter_file):
         try:
             print("Encountered interference! Running interference sequence")
@@ -174,6 +177,8 @@ class Controller:
                 print("Stuck, please restart!")
                 print(e)
 
+    # Method stops current run.
+    # Used for loops and single runs.
     def stop_run(self, COM_insert):
         try:
             self.stop_scheduler()
@@ -191,6 +196,7 @@ class Controller:
         except:
             print("Could not stop loop")
 
+    # Method sets motor positions to zero
     @staticmethod
     def set_position_zero(COM_insert):
         try:
@@ -204,6 +210,7 @@ class Controller:
             print("Can not set position to ZERO")
             print(e)
 
+    # Method sets motor speeds to zero
     @staticmethod
     def set_speed_zero(COM_insert):
         try:
@@ -217,8 +224,9 @@ class Controller:
             print("Can not set speed to ZERO")
             print(e)
 
+    # Method zero's motors position
     @staticmethod
-    def position_zero(COM_insert):
+    def zero_position(COM_insert):
         try:
             with Motor.connect(COM_insert) as motor:
                 motor.select(1)
