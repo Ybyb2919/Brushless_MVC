@@ -24,6 +24,10 @@ class Motor:
             yield cls(ser)
 
     @staticmethod
+    def close_port(port_name: str, baud_rate=921600):
+        Serial(port_name, baud_rate).__del__()
+
+    @staticmethod
     def _calc_checksum(data: bytes):
         return (sum(data) & 0xff).to_bytes(1, 'big')
 

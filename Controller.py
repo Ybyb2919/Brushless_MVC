@@ -8,8 +8,12 @@ from datetime import datetime
 
 
 class Controller:
+    """
+    A class for controlling a Motor object.
+    """
 
     def __init__(self):
+        """Initializes a Controller object."""
         self.loop_date = None
         self.loop_run = None
         self.scheduler = sched.scheduler()
@@ -17,6 +21,17 @@ class Controller:
 
     @staticmethod
     def send_once(motor_id, position, kp, kd, COM_insert):
+        """
+        Sends a single command to a motor to set its position.
+
+        Arguments:
+            motor_id: the ID of the motor to control
+            position: the position to set the motor to
+            kp: the proportional gain value to use
+            kd: the derivative gain value to use
+            COM_insert: the COM port to use to connect to the motor
+
+        """
         try:
             with Motor.connect(COM_insert) as motor:
                 print("SENDING")
@@ -29,6 +44,13 @@ class Controller:
 
     @staticmethod
     def run_command(motor: Motor, command: Command):
+        """
+        Runs a single Command object on a Motor object.
+
+        Arguments:
+        motor: the Motor object to run the command on
+        command: the Command object to run
+        """
         motor.select(command.motor_id)
 
         if command.motor_id == 0:
@@ -68,12 +90,11 @@ class Controller:
             i = int(loop_count)
             print("Building Scheduler")
             commands = Util1_Excel.read_xls(file_name)
-
             print("Running from: " + file_name)
 
-            with Motor.connect(COM_insert) as motor:
-                self.loop_run = True
-                while i > 0 and self.loop_run is True:
+            self.loop_run = True
+            while i > 0 and self.loop_run is True:
+                with Motor.connect(COM_insert) as motor:
                     i -= 1
                     for command in commands:
                         self.scheduler.enter(command.time, priority=0,
@@ -160,11 +181,6 @@ class Controller:
             print("Encountered interference! Running interference sequence")
             self.stop_run(COM_insert)
             time.sleep(1)
-            self.motors_off(COM_insert)
-            time.sleep(1)
-            self.motors_on(COM_insert)
-            self.set_position_zero(COM_insert)
-            time.sleep(1)
             self.run_from_xls(inter_file, COM_insert)
             time.sleep(1)
             self.run_from_xls_loop(file_name, COM_insert, loop_count)
@@ -180,13 +196,15 @@ class Controller:
     # Method stops current run.
     # Used for loops and single runs.
     def stop_run(self, COM_insert):
-        try:
-            self.stop_scheduler()
+        # try:
+            self.loop_run = False
+            list(map(self.scheduler.cancel, self.scheduler.queue))
             time.sleep(0.3)
+            Motor.close_port(COM_insert)
             print("RUN STOPPED")
-        except Exception as e:
-            print("Could not stop run")
-            print(e)
+        # except Exception as e:
+        #     print("Could not stop run")
+        #     print(e)
 
     def stop_date_loop(self, COM_insert):
         try:
@@ -238,8 +256,3 @@ class Controller:
         except Exception as e:
             print("Can not zero position")
             print(e)
-
-    def stop_scheduler(self):
-        self.loop_run = False
-        list(map(self.scheduler.cancel, self.scheduler.queue))
-        time.sleep(1)

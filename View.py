@@ -75,7 +75,7 @@ class View:
                 sg.In(size=(28, 1), key="-TOUT-")
             ],
             [
-                sg.HSeparator(3)
+                sg.HSeparator('3')
             ],
             [
                 sg.Button("SINGLE RUN"),
@@ -127,7 +127,7 @@ class View:
                 sg.VSeperator(),
                 sg.Column(file_run_section)
             ],
-            [sg.Output(size=(139, 15))]
+            # [sg.Output(size=(139, 15))]
         ]
 
         window = sg.Window('AK 60 Duo Controller', layout)
@@ -207,7 +207,7 @@ class View:
                 self.controller.stop_date_loop(values['-COM-'])
 
             elif event == "SET ZERO":
-                self.controller.position_zero(values['-COM-'])
+                self.controller.zero_position(values['-COM-'])
 
             elif event == "INTERFERE":
                 threading.Thread(target=self.controller.interfere,
