@@ -127,7 +127,7 @@ class View:
                 sg.VSeperator(),
                 sg.Column(file_run_section)
             ],
-            # [sg.Output(size=(139, 15))]
+            [sg.Output(size=(139, 15))]
         ]
 
         window = sg.Window('AK 60 Duo Controller', layout)
