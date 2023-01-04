@@ -1,4 +1,5 @@
 from Model import Motor
+import func_timeout
 import time
 import Util1_Excel
 import sched
@@ -137,35 +138,22 @@ def run_from_xls_loop_date(file_name, COM_insert, loop_count, start_hour, end_ho
         set_zero_off(COM_insert)
 
 
-def turn_on_caller(COM_insert):
-    motor_stat = False
-    x = 0
-    while x < 3 and not motor_stat:
+def turn_on(COM_insert, times_tried=0):
+    motors_on = False
+
+    while times_tried < 3 and not motors_on:
         try:
-            motor_stat = func_timeout.func_timeout(3, turn_on, args=(COM_insert,))
+            print("Turning on")
+            with Motor.connect(COM_insert) as motor:
+                motor.init(1)
+                time.sleep(0.3)
+                motor.init(2)
+                print("MOTORS ON")
+                motors_on = True
         except:
-            x += 1
+            print("Can not Turn on motors. System trying again")
+            times_tried += 1
 
-            #TODO: check if close_port worksq
-
-
-# @func_set_timeout(2.5)
-def turn_on(COM_insert):
-    try:
-        print("Turning on")
-        with Motor.connect(COM_insert) as motor:
-            motor.init(1)
-            time.sleep(0.3)
-            motor.init(2)
-
-            print("MOTORS ON")
-            return True
-
-    except:
-        print("Can not Turn on motors. System trying again")
-        time.sleep(1)
-        motor.close_port()
-        return False
 
 def set_zero(COM_insert):
     try:

@@ -1,3 +1,4 @@
+from func_timeout import func_timeout
 from serial import Serial
 from config import AK606Config
 from contextlib import contextmanager
@@ -17,7 +18,7 @@ class Motor:
     @classmethod
     @contextmanager
     def connect(cls, port_name: str, baud_rate=921600):
-        with Serial(port=port_name, baudrate=baud_rate) as ser:
+        with Serial(port_name, baud_rate, timeout=2) as ser:
             ser.write(cls.STARTUP_RLINK_MESSAGE)
             ser.read(7)
             yield cls(ser)
@@ -63,6 +64,7 @@ class Motor:
     def reset(self):
         """ reset motor """
         self.send_message(bytes.fromhex('fffffffffffffffe'))
+
     def set_position(self, position, kp, kd):
         self.send_message(AK606Config(position=position, speed=0, kp=kp, kd=kd, torque=0).can_data)
 
@@ -91,11 +93,3 @@ class Motor:
                 return current_position
             except:
                 pass
-
-
-    # def read_speed(self):
-    #     return AK606Config.SPEED
-
-    # def read_torque(self):
-    #     return AK606Config.TORQUE
-
