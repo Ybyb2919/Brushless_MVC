@@ -37,10 +37,3 @@ def read_xls(file: Path) -> List[Command]:
         else:
             raise ValueError(f"Empty command at row {index}")
     return commands
-
-
-
-# if __name__ == '__main__':
-# run_from_xls(Path(sys.argv[1]), sys.argv[2])
-# run_from_xls(Path('example.xlsx'), "COM3")
-# run_from_xls(Path(sys.argv[1]), 'COM3')
